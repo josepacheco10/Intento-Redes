@@ -1,40 +1,24 @@
 package java_video_stream;
 
-import com.sun.jna.Native;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.imageio.ImageIO;
-
 import javax.swing.*;
-
 import com.sun.jna.NativeLibrary;
-import com.sun.jna.platform.win32.WinUser.POINT;
-
-import java.nio.file.Files;
-import uk.co.caprica.vlcj.binding.LibVlc;
 
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
-import uk.co.caprica.vlcj.runtime.x.LibXUtil;
-//import uk.co.caprica.vlcj.runtime.windows.WindowsRuntimeUtil;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
 
@@ -55,14 +39,15 @@ public class JavaServer {
 	static int count = 0;
 	public static BufferedReader[] inFromClient;
 	public static DataOutputStream[] outToClient;
+	public Vidthread videito;
 	
 	public static void main(String[] args) throws Exception
 	{
 		JavaServer jv = new JavaServer();
 	}
-
 	
-	public JavaServer() throws Exception {
+	
+		public JavaServer() throws Exception {
 		
 		
 		NativeLibrary.addSearchPath("libvlc", System.getenv("ProgramFiles") + "\\VideoLAN\\VLC");
@@ -142,13 +127,13 @@ public class JavaServer {
 class Vidthread extends Thread {
 
 	int clientno;
-	
+	public Canvas_Demo canvitas;
 	JFrame jf = new JFrame("scrnshots before sending");
 	JLabel jleb = new JLabel();
-
+	Robot rb = new Robot();
 	DatagramSocket soc;
 
-	Robot rb = new Robot();
+	
 
 	byte[] outbuff = new byte[62000];
 
@@ -157,7 +142,7 @@ class Vidthread extends Thread {
 	Rectangle rc;
 	
 	int bord = Canvas_Demo.panel.getY() - Canvas_Demo.frame.getY();
-
+	
 	// Rectangle rv = new Rectangle(d);
 	public Vidthread(DatagramSocket ds) throws Exception {
 		soc = ds;
@@ -167,6 +152,7 @@ class Vidthread extends Thread {
 		jf.setLocation(500, 400);
 		jf.setVisible(true);
 	}
+	
 
 	public void run() {
 		while (true) {
@@ -217,10 +203,10 @@ class Vidthread extends Thread {
 class Canvas_Demo {
 
 	// Create a media player factory
-	private MediaPlayerFactory mediaPlayerFactory;
+	//private MediaPlayerFactory mediaPlayerFactory;
 
 	// Create a new media player instance for the run-time platform
-	private EmbeddedMediaPlayer mediaPlayer;
+	public EmbeddedMediaPlayer mediaPlayer;
 
 	public static JPanel panel;
 	public static JPanel myjp;
@@ -254,7 +240,7 @@ class Canvas_Demo {
 		panel.add(canvas, BorderLayout.CENTER);
 
 		// Creation a media player :
-		mediaPlayerFactory = new MediaPlayerFactory();
+		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
 		CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
 		mediaPlayer.setVideoSurface(videoSurface);
@@ -318,6 +304,16 @@ class Canvas_Demo {
 			}
 		});
 	}
+	
+	
+//	public void ReplayVideo(){
+//		play.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				mediaPlayer.release();	
+//			}
+//		});
+//	}
 }
 
 class SThread extends Thread {
@@ -338,7 +334,7 @@ class SThread extends Thread {
 				clientSentence = inFromClient.readLine();
 				// clientSentence = inFromClient.readLine();
 
-				System.out.println("From Client " + srcid + ": " + clientSentence);
+				//System.out.println("From Client " + srcid + ": " + clientSentence);
 				Canvas_Demo.ta.append("From Client " + srcid + ": " + clientSentence + "\n");
 				
 				for(int i=0; i<JavaServer.i; i++){

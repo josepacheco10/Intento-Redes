@@ -16,16 +16,12 @@ public class Java_Video_Stream {
      */
     public static void main(String[] args) {
     	
-//    	try {
-//			JavaServer servidor = new JavaServer();
-//			JavaClient cliente = new JavaClient();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//    	
-//    	
-//        
-    }
+    	try {
+			JavaServer servidor = new JavaServer();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     
+    }
 }
